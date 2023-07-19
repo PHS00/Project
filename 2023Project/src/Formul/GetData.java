@@ -14,7 +14,7 @@ public class GetData {
 	
 	public static void main(String[] args) {
 		
-		Path path = Paths.get("C:\\Users\\최적화_연구실_PC1\\OneDrive - Chonnam National University\\바탕 화면\\OptLab-Project\\Project\\2023Project\\"
+		Path path = Paths.get("C:\\Users\\최적화_연구실_PC1\\OneDrive - Chonnam National University\\바탕 화면\\OptLab-Project\\Project\\2023Project"
 				+ "/south-data.txt");
 		
 		
