@@ -1,6 +1,9 @@
 package Formul;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import ilog.concert.IloException;
@@ -179,11 +182,25 @@ public class Formulation {
 			cplex.exportModel("test.lp");
 			cplex.solve();
 			long endTime = System.currentTimeMillis();
+			
+			LocalDateTime currentDateTime = LocalDateTime.now();
+			String resultFileName = "Result-" + GetData.dataName + "-" + currentDateTime + ".txt";
+			String resultPath = "C:\\Users\\최적화_연구실_PC1\\OneDrive - Chonnam National University\\바탕 화면"
+					+ "\\OptLab-Project\\Project\\Result";
+			BufferedWriter bw = new BufferedWriter(new FileWriter(resultPath + resultFileName, false));
+			
 			System.out.println("Running time : " + (endTime - startTime) / 1000. + "sec");
+			bw.write("Running time : " + (endTime - startTime) / 1000. + "sec");
+			bw.newLine();
+			
 			System.out.println("Obj value :" + cplex.getObjValue());
+			bw.write("Obj value :" + cplex.getObjValue());
+			bw.newLine();
 
 			for (int t = 1; t < endDay; t++) {
 				System.out.println(t + "일에  각 차량 이동 경로 ");
+				bw.write(t + "일에  각 차량 이동 경로 ");
+				bw.newLine();
 				for (int k = 0; k < l; k++) {
 					int i = 0;
 					int j = 0;
@@ -192,6 +209,8 @@ public class Formulation {
 						if (cplex.getValue(x[i][j][t][k]) > 0.5) {
 							
 							System.out.println((k + 1) + "Vechicle routing path : " + (i + 1) + " " + (j + 1));
+							bw.write((k + 1) + "Vechicle routing path : " + (i + 1) + " " + (j + 1));
+							bw.newLine();
 							i = j;
 							j = -1;
 							if (i == 0)

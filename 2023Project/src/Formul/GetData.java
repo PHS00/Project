@@ -14,26 +14,23 @@ public class GetData {
 	public static double[] s;
 	public static double[][] d;
 	public static double[][][] w;
+	static String dataName = "south-data";
 	
 	
 	public static void main(String[] args) {
 		
-<<<<<<< HEAD
-		Path path = Paths.get("//Users/hijieung/Desktop/Opt_Project/Project/Data/남구 데이터.txt");
-=======
-<<<<<<< HEAD
-		Path path = Paths.get("//Users/hijieung/Desktop/Opt_Project/Project/Data/남구 데이터 텍스트.txt");
-=======
-		Path path = Paths.get("C:\\Users\\최적화_연구실_PC1\\OneDrive - Chonnam National University\\바탕 화면\\OptLab-Project\\Project\\2023Project\\"
-				+ "/south-data.txt");
->>>>>>> main
->>>>>>> upstream/main
 		
-		
+		Path path = Paths.get("C:\\Users\\최적화_연구실_PC1\\OneDrive - Chonnam National University\\바탕 화면\\OptLab-Project"
+				+ "\\Project\\2023Project\\"
+				+ dataName
+				+ ".txt");
+
 		try {
+//			Scanner scanner = new Scanner(new File(path.toString()));
 			List<String> allLines = Files.readAllLines(path);
 			String[] tmpdata;
 			n = Integer.parseInt(allLines.get(0));
+//			n = scanner.nextInt();
 			K = 2;
 			d = new double [n][n];
 			T = new int [n];
