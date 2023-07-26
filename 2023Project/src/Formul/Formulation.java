@@ -1,9 +1,12 @@
 package Formul;
 
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import ilog.concert.IloException;
@@ -183,10 +186,14 @@ public class Formulation {
 			cplex.solve();
 			long endTime = System.currentTimeMillis();
 			
-			LocalDateTime currentDateTime = LocalDateTime.now();
-			String resultFileName = "Result-" + GetData.dataName + "-" + currentDateTime + ".txt";
-			String resultPath = "C:\\Users\\최적화_연구실_PC1\\OneDrive - Chonnam National University\\바탕 화면"
-					+ "\\OptLab-Project\\Project\\Result";
+			LocalDateTime now = LocalDateTime.now();
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일 a h시 m분");
+			String nowString = now.format(dateTimeFormatter);
+			
+			String resultFileName = "Result-" + GetData.dataName + "-" + nowString + ".txt";
+//			String resultFileName = "Result-" + GetData.dataName + ".txt";
+			
+			String resultPath = "C:\\Users\\최적화_연구실_PC1\\OneDrive - Chonnam National University\\바탕 화면\\OptLab-Project\\Project\\Result\\";
 			BufferedWriter bw = new BufferedWriter(new FileWriter(resultPath + resultFileName, false));
 			
 			System.out.println("Running time : " + (endTime - startTime) / 1000. + "sec");
@@ -222,6 +229,7 @@ public class Formulation {
 
 			}
 			cplex.end();
+			bw.close();
 		} catch (IloException exc) {
 			exc.printStackTrace();
 		}
