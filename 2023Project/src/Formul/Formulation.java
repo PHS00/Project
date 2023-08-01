@@ -1,9 +1,12 @@
 package Formul;
 
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import ilog.concert.IloException;
@@ -64,6 +67,8 @@ public class Formulation {
 			// 결정변수
 			IloNumVar[][][][] x = new IloNumVar[n][n][endDay][l];
 
+			
+			
 			// 비음 제약식
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
@@ -99,6 +104,18 @@ public class Formulation {
 						for (int t = 1; t < endDay; t++) {
 							if (T.get(i).contains(t) == T.get(j).contains(t))
 								objective.addTerm(tmpDis[i][j], x[i][j][t][k]);
+						}
+					}
+				}
+			}
+			
+			// TODO : T[i]값 관련 오류 해결해야함
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					for (int t = 1; t < T.get(i).get(0); t++) {
+						for(int k = 0; k < l; k++) {
+							cplex.addEq(x[i][j][t][k], 0);
+							cplex.addEq(x[j][i][t][k], 0);
 						}
 					}
 				}
@@ -177,51 +194,66 @@ public class Formulation {
 
 			cplex.addMinimize(objective);
 			cplex.setParam(IloCplex.Param.Simplex.Display, 0);
-			long startTime = System.currentTimeMillis();
+			cplex.setParam(IloCplex.DoubleParam.TimeLimit, 3600);
 			
-			cplex.exportModel("test.lp");
+			long startTime = System.currentTimeMillis();
+//			cplex.exportModel("test.lp");
 			cplex.solve();
 			long endTime = System.currentTimeMillis();
 			
-			LocalDateTime currentDateTime = LocalDateTime.now();
-			String resultFileName = "Result-" + GetData.dataName + "-" + currentDateTime + ".txt";
-			String resultPath = "C:\\Users\\최적화_연구실_PC1\\OneDrive - Chonnam National University\\바탕 화면"
-					+ "\\OptLab-Project\\Project\\Result";
+			LocalDateTime now = LocalDateTime.now();
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일 a h시 m분");
+			String nowString = now.format(dateTimeFormatter);
+			
+			String problemSize = "n" + n + "-k" + l + "-";
+			String resultFileName = "Result-" + GetData.dataName + "-" + problemSize + nowString + ".txt";
+//			String resultFileName = "Result-" + GetData.dataName + ".txt";
+			
+			String resultPath = "C:\\Users\\최적화_연구실_PC1\\OneDrive - Chonnam National University\\바탕 화면\\OptLab-Project\\Project\\Result\\";
 			BufferedWriter bw = new BufferedWriter(new FileWriter(resultPath + resultFileName, false));
 			
 			System.out.println("Running time : " + (endTime - startTime) / 1000. + "sec");
 			bw.write("Running time : " + (endTime - startTime) / 1000. + "sec");
 			bw.newLine();
 			
-			System.out.println("Obj value :" + cplex.getObjValue());
-			bw.write("Obj value :" + cplex.getObjValue());
-			bw.newLine();
-
-			for (int t = 1; t < endDay; t++) {
-				System.out.println(t + "일에  각 차량 이동 경로 ");
-				bw.write(t + "일에  각 차량 이동 경로 ");
+			if(cplex.getStatus().equals(IloCplex.Status.Feasible) || cplex.getStatus().equals(IloCplex.Status.Optimal)) {
+				System.out.println("Obj value :" + cplex.getObjValue());
+				bw.write("Obj value :" + cplex.getObjValue());
 				bw.newLine();
-				for (int k = 0; k < l; k++) {
-					int i = 0;
-					int j = 0;
-					
-					while (j != n) {
-						if (cplex.getValue(x[i][j][t][k]) > 0.5) {
-							
-							System.out.println((k + 1) + "Vechicle routing path : " + (i + 1) + " " + (j + 1));
-							bw.write((k + 1) + "Vechicle routing path : " + (i + 1) + " " + (j + 1));
-							bw.newLine();
-							i = j;
-							j = -1;
-							if (i == 0)
-								break;
+				
+				for (int t = 1; t < endDay; t++) {
+					System.out.println(t + "일에  각 차량 이동 경로 ");
+					bw.write(t + "일에  각 차량 이동 경로 ");
+					bw.newLine();
+					for (int k = 0; k < l; k++) {
+						int i = 0;
+						int j = 0;
+						
+						while (j != n) {
+							if (cplex.getValue(x[i][j][t][k]) > 0.5) {
+								
+								System.out.println((k + 1) + "Vechicle routing path : " + (i + 1) + " " + (j + 1));
+								bw.write((k + 1) + "Vechicle routing path : " + (i + 1) + " " + (j + 1));
+								bw.newLine();
+								i = j;
+								j = -1;
+								if (i == 0)
+									break;
+							}
+							j++;
 						}
-						j++;
 					}
+					
 				}
-
 			}
+			else {
+				System.out.println("Error");
+				bw.write("Error");
+				bw.newLine();
+			}
+			
 			cplex.end();
+			bw.close();
 		} catch (IloException exc) {
 			exc.printStackTrace();
 		}
