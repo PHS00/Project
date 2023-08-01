@@ -28,7 +28,7 @@ public class GetData {
 			List<String> allLines = Files.readAllLines(path);
 			String[] tmpdata;
 			n = Integer.parseInt(allLines.get(0));
-			n = 10;
+			n = 40;
 			K = 2;
 			d = new double [n][n];
 			s = new double [n];
@@ -43,14 +43,15 @@ public class GetData {
 				}
 			}
 			
-//			tmpdata = allLines.get(n+2).split(",");
-			tmpdata = allLines.get(90).split(",");
+//			tmpdata = allLines.get(n+1).split(",");
+			tmpdata = allLines.get(91).split(",");
 			for(int i=0; i<n; i++) {
 					T[i] = Integer.parseInt(tmpdata[i]);
+					System.out.println(tmpdata[i]);
 			}
 			
-//			tmpdata = allLines.get(n+3).split(",");
-			tmpdata = allLines.get(91).split(",");
+//			tmpdata = allLines.get(n+2).split(",");
+			tmpdata = allLines.get(92).split(",");
 			for(int i=0; i<n; i++) {
 					s[i] = Double.parseDouble(tmpdata[i]);
 			}
