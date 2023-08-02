@@ -14,43 +14,36 @@ public class GetData {
 	public static double[] s;
 	public static double[][] d;
 	public static double[][][] w;
-	static String dataName = "south-data";
 	
-	public static void main(String[] args)  {
+	
+	public static void main(String[] args) {
 		
-		
-		Path path = Paths.get("C:\\Users\\최적화_연구실_PC1\\OneDrive - Chonnam National University\\바탕 화면\\OptLab-Project\\Project\\Data\\"
-				+ dataName
-				+ ".txt");
 
+		Path path = Paths.get("//Users/hijieung/Desktop/Opt_Project/Project/Data/남구 데이터.txt");
+		
 		try {
 			List<String> allLines = Files.readAllLines(path);
 			String[] tmpdata;
 			n = Integer.parseInt(allLines.get(0));
-			n = 30;
+			n -= 1;
 			K = 2;
 			d = new double [n][n];
-			s = new double [n];
 			T = new int [n];
 			w = new double[n][n][K];
-			
 			
 			for(int i=1; i<n+1; i++) {
 				tmpdata = allLines.get(i).split(",");
 				for(int j=0; j<n; j++) {
-					d[i-1][j] = Double.parseDouble(tmpdata[j]);
+					d[i][j] = Double.parseDouble(tmpdata[j]);
 				}
 			}
 			
-//			tmpdata = allLines.get(n+1).split(",");
-			tmpdata = allLines.get(91).split(",");
+			tmpdata = allLines.get(n+2).split(",");
 			for(int i=0; i<n; i++) {
 					T[i] = Integer.parseInt(tmpdata[i]);
-					System.out.println(tmpdata[i]);
 			}
 			
-//			tmpdata = allLines.get(n+2).split(",");
-			tmpdata = allLines.get(92).split(",");
+			tmpdata = allLines.get(n+3).split(",");
 			for(int i=0; i<n; i++) {
 					s[i] = Double.parseDouble(tmpdata[i]);
 			}
