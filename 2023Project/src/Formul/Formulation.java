@@ -220,6 +220,13 @@ public class Formulation {
 				System.out.println("Obj value :" + cplex.getObjValue());
 				bw.write("Obj value :" + cplex.getObjValue());
 				bw.newLine();
+				// calculate gap rate
+				double ub = cplex.getObjValue();
+				double lb = cplex.getBestObjValue();
+				double gap = 100 * (ub - lb) / lb;
+				System.out.println("Gap : " + gap + "%");
+				bw.write("Gap : " + gap + "%");
+				bw.newLine();
 				
 				for (int t = 1; t < endDay; t++) {
 					System.out.println(t + "일에  각 차량 이동 경로 ");

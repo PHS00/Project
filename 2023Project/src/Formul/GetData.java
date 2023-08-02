@@ -28,7 +28,7 @@ public class GetData {
 			List<String> allLines = Files.readAllLines(path);
 			String[] tmpdata;
 			n = Integer.parseInt(allLines.get(0));
-			n = 40;
+			n = 35;
 			K = 2;
 			d = new double [n][n];
 			s = new double [n];
