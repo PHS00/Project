@@ -14,7 +14,7 @@ public class GetData {
 	public static double[] s;
 	public static double[][] d;
 	public static double[][][] w;
-	static String dataName = "south-data";
+	static String dataName = "gwangsan-data-n15";
 	
 	public static void main(String[] args)  {
 		
@@ -27,7 +27,7 @@ public class GetData {
 			List<String> allLines = Files.readAllLines(path);
 			String[] tmpdata;
 			n = Integer.parseInt(allLines.get(0));
-			n = 30;
+//			n = 20;
 			K = 2;
 			d = new double [n][n];
 			s = new double [n];
