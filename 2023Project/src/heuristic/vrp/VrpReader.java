@@ -14,7 +14,8 @@ public class VrpReader {
 	private static double[][] dists;
 	private static String dataName = "gwangsan-data-n15";
 
-	private static Path path = Paths.get("C:\\Users\\최적화_연구실_PC1\\OneDrive - Chonnam National University\\바탕 화면\\OptLab-Project\\Project\\Data\\"
+	
+	private static Path path = Paths.get("/Users/phs/Desktop/OptLab/Project"
 			+ dataName
 			+ ".txt");
 	
