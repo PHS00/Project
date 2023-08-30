@@ -39,7 +39,7 @@ public class VrpProblem {
 	public void buildAvaiableDays() {
 		// 6월기준 30일까지 
 		int endDay = 31;
-		for (int i = 0; i < n; i++) {
+		for (int i = 0; i < numCustomers; i++) {
 			availableDays.add(new ArrayList<>());
 			for (int day = startDay[i]; day < endDay; day++) {
 				availableDays.get(i).add(day);
@@ -49,8 +49,8 @@ public class VrpProblem {
 	}
 	
 	public void buildTravelTimes() {
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
+		for (int i = 0; i < numCustomers; i++) {
+			for (int j = 0; j < numCustomers; j++) {
 				if (i == j)
 					travelTimes[i][j] = 0;
 				else
@@ -68,6 +68,10 @@ public class VrpProblem {
 	public double[][] getDistances() {
 		// TODO Auto-generated method stub
 		return this.dists;
+	}
+	
+	public double calDis(Integer node1, Integer node2) {
+		return this.dists[node1][node2];
 	}
 
 }
