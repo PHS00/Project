@@ -13,21 +13,23 @@ public class GetData {
 	public static int[] T;
 	public static double[] s;
 	public static double[][] d;
-	public static double[][] w;
+	public static double[][][] w;
 	
 	
 	public static void main(String[] args) {
 		
-		Path path = Paths.get("//Users/hijieung/Desktop/Opt_Project/Project/Data/남구 데이터.txt");
-		
+
+		Path path = Paths.get("//Users/hijieung/Desktop/Opt_Project/Project/Data/north-data.txt");
 		
 		try {
 			List<String> allLines = Files.readAllLines(path);
 			String[] tmpdata;
 			n = Integer.parseInt(allLines.get(0));
+			n-=10;
 			K = 2;
 			d = new double [n][n];
 			T = new int [n];
+			w = new double[n][n][K];
 			
 			for(int i=1; i<n+1; i++) {
 				tmpdata = allLines.get(i).split(",");
@@ -48,8 +50,10 @@ public class GetData {
 			
 			for(int i=0; i<n;i++) {
 				for(int j=0; j<n; j++) {
-					if(i==j) w[i][j] = 0;
-					else w[i][j] = (d[i][j])/1000;
+					for(int k=0; k<K; k++) {
+						if(i==j) w[i][j][k] = 0;
+						else w[i][j][k] = (d[i][j])/1000.;
+					}
 				}
 			}
 			//시간 = 거리/속력

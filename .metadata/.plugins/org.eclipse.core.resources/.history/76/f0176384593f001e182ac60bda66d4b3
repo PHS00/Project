@@ -19,7 +19,7 @@ public class GetData {
 	public static void main(String[] args) {
 		
 
-		Path path = Paths.get("//Users/hijieung/Desktop/Opt_Project/Project/Data/north-data.txt");
+		Path path = Paths.get("//Users/hijieung/Desktop/Opt_Project/Project/Data/남구\데이터.txt");
 		
 		try {
 			List<String> allLines = Files.readAllLines(path);

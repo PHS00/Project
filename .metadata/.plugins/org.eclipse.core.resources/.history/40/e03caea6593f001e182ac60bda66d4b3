@@ -11,15 +11,15 @@ public class GetData {
 	public static int K = 0;
 	public static int Q = 0;
 	public static int[] T;
-	public static int[] s;
+	public static double[] s;
 	public static double[][] d;
-	public static double[][] w;
+	public static double[][][] w;
 	
 	
 	public static void main(String[] args) {
 		
-		Path path = Paths.get("//Users/hijieung/Desktop/Opt_Project/Project/Data/남구 데이터.txt");
-		
+
+		Path path = Paths.get("//Users/hijieung/Desktop/Opt_Project/Project/Data/north-data.txt");
 		
 		try {
 			List<String> allLines = Files.readAllLines(path);
@@ -28,10 +28,11 @@ public class GetData {
 			K = 2;
 			d = new double [n][n];
 			T = new int [n];
+			w = new double[n][n][K];
 			
 			for(int i=1; i<n+1; i++) {
 				tmpdata = allLines.get(i).split(",");
-				for(int j=0; j<n; j++) {
+				for(int j=0; j<n+1; j++) {
 					d[i][j] = Double.parseDouble(tmpdata[j]);
 				}
 			}
@@ -43,13 +44,15 @@ public class GetData {
 			
 			tmpdata = allLines.get(n+3).split(",");
 			for(int i=0; i<n; i++) {
-					s[i] = Integer.parseInt(tmpdata[i]);
+					s[i] = Double.parseDouble(tmpdata[i]);
 			}
 			
 			for(int i=0; i<n;i++) {
 				for(int j=0; j<n; j++) {
-					if(i==j) w[i][j] = 0;
-					else w[i][j] = (d[i][j])/1000;
+					for(int k=0; k<K; k++) {
+						if(i==j) w[i][j][k] = 0;
+						else w[i][j][k] = (d[i][j])/1000.;
+					}
 				}
 			}
 			//시간 = 거리/속력

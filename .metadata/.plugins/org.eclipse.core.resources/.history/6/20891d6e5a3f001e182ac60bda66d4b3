@@ -25,6 +25,7 @@ public class GetData {
 			List<String> allLines = Files.readAllLines(path);
 			String[] tmpdata;
 			n = Integer.parseInt(allLines.get(0));
+			n-=1;
 			K = 2;
 			d = new double [n][n];
 			T = new int [n];
