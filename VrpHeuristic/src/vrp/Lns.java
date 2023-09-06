@@ -10,95 +10,91 @@ public class Lns {
 		this.rand = rand;
 	}
 
-	public VrpSolution remove(VrpSolution sol, int numToRemove) {
-		VrpProblem problem = sol.getProblem();
-		ArrayList<Integer> removedCustomers = new ArrayList<Integer>(numToRemove);
-		ArrayList<Integer> remainingCustomers = new ArrayList<Integer>();
+	public void remove(VrpSolution sol, int numToRemove, int date) {
+		ArrayList<Integer> removedSites = new ArrayList<>();
+		ArrayList<Integer> remainingSites = new ArrayList<>();
+		int depot = 0;
 
-		int[] customerVehicles = new int[problem.getNumCustomers()];
-		int vehicle = 0;
-		// check each vehicle visited customer
-		for (List<Integer> route : sol.getRoutes()) {
-			for (int customerId : route) {
-				customerVehicles[customerId] = vehicle;
-				remainingCustomers.add(customerId);
+		// 해당하는 날짜의 경로를 가져옴
+		Routes routes = sol.getRouteOfDate(date);
+		List<List<Integer>> consideringRoutes = routes.getRoutes();
+		for (List<Integer> route : consideringRoutes) {
+			for (Integer siteID : route) {
+				if(siteID == depot) continue;
+				remainingSites.add(siteID);
 			}
-			vehicle++;
 		}
 
-		// choose first to remove
-
-		// remove the rest
-		while(removedCustomers.size() != numToRemove){
+		// remove
+		while(removedSites.size() != numToRemove){
 			// take a random removed node
-			int removeCustomerId = (int) (rand.nextDouble() * problem.getNumCustomers());
-			if(removeCustomerId == 0 || removedCustomers.contains(removeCustomerId)) continue;
-			remainingCustomers.remove(removeCustomerId);
-			removedCustomers.add(removeCustomerId);
+			// 해당 날짜에 경로에 포함되어 있는 sites 중 제거할 인덱스를 하나 추출해야함
+			double random = rand.nextDouble();	// 0 ~ 1 사이 값
+			int index = (int) (random * remainingSites.size());
+			Integer removeSiteId = remainingSites.get(index);
+			remainingSites.remove(removeSiteId);
+			removedSites.add(removeSiteId);
 		}
 		// build the new solution
-		List<List<Integer>> newRoutes = buildRoutesWithoutRemovedCusts(sol.getRoutes(), removedCustomers);
+		List<List<Integer>> newRoutes = buildRoutesWithoutRemovedSites(consideringRoutes, removedSites);
+		routes.setRoutes(newRoutes);
+		sol.setRemovedSites(removedSites);
 
-		return new VrpSolution(newRoutes, removedCustomers, problem);
 	}
 
-	public List<List<Integer>> buildRoutesWithoutRemovedCusts(List<List<Integer>> routes, List<Integer> removedCustomers) {
-		List<List<Integer>> newRoutes = new ArrayList<List<Integer>>(routes.size());
+	public List<List<Integer>> buildRoutesWithoutRemovedSites(List<List<Integer>> routes, List<Integer> removedSites) {
+		List<List<Integer>> newRoutes = new ArrayList<>(routes.size());
 		for (List<Integer> oldRoute : routes) {
-			List<Integer> newRoute = new ArrayList<Integer>();
+			List<Integer> newRoute = new ArrayList<>();
 			newRoutes.add(newRoute);
-			for (Integer customerId : oldRoute) {
-				if (!removedCustomers.contains(customerId)) {
-					newRoute.add(customerId);
+			for (Integer siteID : oldRoute) {
+				if (!removedSites.contains(siteID)) {
+					newRoute.add(siteID);
 				}
 			}
 		}
-
 		return newRoutes;
 	}
 
-	public VrpSolution repair(VrpSolution sol){
+	public void repair(VrpSolution sol, int date){
 
-		List<List<Integer>> routes = sol.getRoutes();
+		Routes routes = sol.getRouteOfDate(date);
 		VrpProblem problem = sol.getProblem();
-		List<Integer> removedCustomers = sol.getUnrouted();
+		List<Integer> removedSites = sol.getRemovedSites();
 
 		ArrayList<Integer> assignedCustomers = new ArrayList<>();
-		for(List<Integer> route : routes) {
+		for(List<Integer> route : routes.getRoutes()) {
 			for(Integer customerId : route) {
 				assignedCustomers.add(customerId);
 			}
 		}
 
-		List<List<Integer>> newRoutes = new ArrayList<List<Integer>>(routes.size());
-		while(!removedCustomers.isEmpty()) {
-			int removedId = removedCustomers.get(0);
+		while(!removedSites.isEmpty()) {
+			Integer removedId = removedSites.get(0);
 
 			double min = Double.MAX_VALUE;
-			int minNodeId = 0;
+			int minSiteId = 0;
 			// find nearest customer from removedCustomer
 			for(Integer assignedId : assignedCustomers) {
 				double dis = problem.calDis(removedId, assignedId);
 				if(dis < min) {
 					min = dis;
-					minNodeId = assignedId;
+					minSiteId = assignedId;
 				}
 			}
 
-			// insert removedCustomer to route including nearest customer
-			for(List<Integer> route : routes) {
-				if(route.contains(minNodeId)) {
-					sol.insertCustomer(route, minNodeId, removedId);
+			// insert removed site to route including nearest site
+			for(List<Integer> route : routes.getRoutes()) {
+				if(route.contains(minSiteId)) {
+					sol.insertSite(route, minSiteId, removedId);
 					break;
 				}
-//				newRoutes.add(route);
 			}
 
-			removedCustomers.remove(Integer.valueOf(removedId));
+			removedSites.remove(removedId);
 
 		}
 
-		return new VrpSolution(routes, problem);
 	}
 
 

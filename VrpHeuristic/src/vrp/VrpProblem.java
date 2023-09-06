@@ -7,25 +7,34 @@ public class VrpProblem {
 
 	private int numCustomers;
 	private int numVehicles;
-	private int[] startDay;
+	private int[] availableDate;
 	private double[][] dists;
 	private int[] serviceTimes;
 
 	private int workingTime;
 	private List<List<Integer>> availableDays = new ArrayList<>();
 	private double[][] travelTimes;
+
+	private List<Site> sites = new ArrayList<>();
 //	private double[] distsFromDepot;
 
-	public VrpProblem(int numCustomers, int[] startDay, double[][] dists, int[] serviceTimes) {
+	public VrpProblem(int numCustomers, int[] availableDate, double[][] dists, int[] serviceTimes) {
 		this.numCustomers = numCustomers;
 		setNumVehicles(2);
-		this.startDay = startDay;
+		this.availableDate = availableDate;
 		this.dists = dists;
 		this.serviceTimes = serviceTimes;
 
 		setWorkingTime(240);
+		createSites();
 		buildAvaiableDays();
 //		buildTravelTimes();
+	}
+	public void createSites(){
+		for(int i = 0; i < availableDate.length; i++){
+			Site site = new Site(availableDate[i]);
+			sites.add(site);
+		}
 	}
 
 	public void setNumVehicles(int numVehicles) {
@@ -41,7 +50,7 @@ public class VrpProblem {
 		int endDay = 31;
 		for (int i = 0; i < numCustomers; i++) {
 			availableDays.add(new ArrayList<>());
-			for (int day = startDay[i]; day < endDay; day++) {
+			for (int day = availableDate[i]; day < endDay; day++) {
 				availableDays.get(i).add(day);
 //				System.out.println(T.get(i).get(t-1));
 			}
@@ -70,7 +79,7 @@ public class VrpProblem {
 		return this.dists;
 	}
 	
-	public double calDis(Integer node1, Integer node2) {
+	public double calDis(int node1, int node2) {
 		return this.dists[node1][node2];
 	}
 

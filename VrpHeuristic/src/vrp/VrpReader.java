@@ -26,10 +26,11 @@ public class VrpReader {
 		String[] tmpdata;
 		n = Integer.parseInt(allLines.get(0));
 //		n = 20;
+		n = 19;
 		dists = new double[n][n];
 		serviceTimes = new int[n];
 		startDays = new int[n];
-		
+
 		Random rand = new Random();
 		for(int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
