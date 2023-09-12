@@ -37,8 +37,8 @@ public class Lns {
 		}
 		// build the new solution
 		List<List<Integer>> newRoutes = buildRoutesWithoutRemovedSites(consideringRoutes, removedSites);
-		routes.setRoutes(newRoutes);
-		sol.setRemovedSites(removedSites);
+		routes.updateRoutes(newRoutes);
+		sol.addRemovedSites(removedSites);
 
 	}
 
@@ -56,21 +56,36 @@ public class Lns {
 		return newRoutes;
 	}
 
-	public void repair(VrpSolution sol, int date){
+	public void repair(VrpSolution sol){
 
-		Routes routes = sol.getRouteOfDate(date);
+		List<Routes> RoutesList = sol.getRoutes();
 		VrpProblem problem = sol.getProblem();
 		List<Integer> removedSites = sol.getRemovedSites();
 
 		ArrayList<Integer> assignedCustomers = new ArrayList<>();
-		for(List<Integer> route : routes.getRoutes()) {
-			for(Integer customerId : route) {
-				assignedCustomers.add(customerId);
-			}
-		}
+
+		List<Site> sites = problem.getSites();
 
 		while(!removedSites.isEmpty()) {
-			Integer removedId = removedSites.get(0);
+			Integer removedId = removedSites.get(0);	// 삽일할 노드
+			// 노드에 저장된 방문가능한 날짜를 불러옴
+			Site site = sites.get(removedId);
+			int availableDate = site.getAvailableDate();
+
+			for(Routes r : RoutesList){
+				// 1. 가능한 날짜 이후의 경로만 고려
+				if(r.getDate() > availableDate){
+					for(List<Integer> route : r.getRoutes()) {
+						// 2. 삽입할 노드의 서비스 타임 + 경로 총 소요시간 < 설정한 시간 이 조건을 만족하는 경로들만 탐색
+						if(sol.calTravelTime(route) + site.getServiceTime() < problem.getWorkingTime()){
+							for(Integer SiteId : route) {
+								if(!assignedCustomers.contains(SiteId))
+									assignedCustomers.add(SiteId);
+							}
+						}
+					}
+				}
+			}
 
 			double min = Double.MAX_VALUE;
 			int minSiteId = 0;
@@ -84,10 +99,12 @@ public class Lns {
 			}
 
 			// insert removed site to route including nearest site
-			for(List<Integer> route : routes.getRoutes()) {
-				if(route.contains(minSiteId)) {
-					sol.insertSite(route, minSiteId, removedId);
-					break;
+			 a : for(Routes r : RoutesList){
+				for(List<Integer> route : r.getRoutes()) {
+					if(route.contains(minSiteId)) {
+						sol.insertSite(route, minSiteId, removedId);
+						break a;
+					}
 				}
 			}
 
