@@ -28,25 +28,26 @@ public class VrpProblem {
 		setWorkingTime(240);
 		createSites();
 		buildAvaiableDays();
-//		buildTravelTimes();
+		buildTravelTimes();
 	}
+
 	public void createSites(){
 		for(int i = 0; i < availableDate.length; i++){
-			Site site = new Site(availableDate[i]);
-			sites.add(site);
+			Site site = new Site(availableDate[i], serviceTimes[i]);
+			this.sites.add(site);
 		}
 	}
 
 	public void setNumVehicles(int numVehicles) {
 		this.numVehicles = numVehicles;
 	}
-	
+
 	public void setWorkingTime(int workingTime) {
 		this.workingTime = workingTime;
 	}
 
 	public void buildAvaiableDays() {
-		// 6월기준 30일까지 
+		// 6월기준 30일까지
 		int endDay = 31;
 		for (int i = 0; i < numCustomers; i++) {
 			availableDays.add(new ArrayList<>());
@@ -56,20 +57,21 @@ public class VrpProblem {
 			}
 		}
 	}
-	
-//	public void buildTravelTimes() {
-//		for (int i = 0; i < numCustomers; i++) {
-//			for (int j = 0; j < numCustomers; j++) {
-//				if (i == j)
-//					travelTimes[i][j] = 0;
-//				else
-//					travelTimes[i][j] = (dists[i][j]) / 1000.;
-//			}
-//		}
-//		// 시간 = 거리/속력
-//		// 60km/h = 1000m/m
-//	}
-	
+
+	public void buildTravelTimes() {
+		travelTimes = new double[numCustomers][numCustomers];
+		for (int i = 0; i < numCustomers; i++) {
+			for (int j = 0; j < numCustomers; j++) {
+				if (i == j)
+					travelTimes[i][j] = 0;
+				else
+					travelTimes[i][j] = (dists[i][j]) / 1000.;
+			}
+		}
+		// 시간 = 거리/속력
+		// 60km/h = 1000m/m
+	}
+
 	public int getNumCustomers() {
 		return this.numCustomers;
 	}
@@ -78,9 +80,25 @@ public class VrpProblem {
 		// TODO Auto-generated method stub
 		return this.dists;
 	}
-	
+
+	public List<Site> getSites(){
+		return this.sites;
+	}
+
+	public int getWorkingTime(){
+		return this.workingTime;
+	}
+
 	public double calDis(int node1, int node2) {
 		return this.dists[node1][node2];
+	}
+
+	public double calTravelTime(int node1, int node2) {
+		return this.travelTimes[node1][node2];
+	}
+
+	public int getServiceTimeOfSite(int siteId){
+		return serviceTimes[siteId];
 	}
 
 }

@@ -17,14 +17,14 @@ public class Test {
 
 		List<Routes> routes = buildRoutes();    // build routes
 
-		VrpSolution sol = new VrpSolution(routes, problem);	// create solution
+		VrpSolution sol = new VrpSolution(routes, problem);    // create solution
 
 		Random rand = new Random();
 		Lns lns = new Lns(rand);
 
-		System.out.println("변경 전 총 거리 비용 : " + calTotalCost(sol));
+		System.out.println("변경 전 총 거리 비용 : " + sol.calTotalCost());
 
-		showRoutes(sol);	// 변경 전 경로 출력
+		sol.showRoutes();    // 변경 전 경로 출력
 
 		// 1일부터 4일까지 반복
 		for (int i = 1; i < 4; i++) {
@@ -35,42 +35,16 @@ public class Test {
 			}
 			System.out.println();
 
-			lns.repair(sol, i);
+			lns.repair(sol);
+
 		}
 
 		System.out.println("복구된 차량 경로");
-		showRoutes(sol);
+		sol.showRoutes();
 
-		System.out.println("변경 후 총 거리 비용 : " + calTotalCost(sol));
-
+		System.out.println("변경 후 총 거리 비용 : " + sol.calTotalCost());
 	}
 
-	public static double calTotalCost(VrpSolution sol) {
-		VrpProblem problem = sol.getProblem();
-		double cost = 0.;
-		for (Routes r : sol.getRoutes()) {
-			for (List<Integer> route : r.getRoutes()) {
-				for (int i = 0; i < route.size() - 1; i++) {
-					int now = route.get(i);
-					int next = route.get(i + 1);
-					cost += problem.calDis(now, next);
-				}
-			}
-		}
-		return cost;
-	}
-
-	public static void showRoutes(VrpSolution sol){
-		for (Routes r : sol.getRoutes()) {
-			System.out.println(r.getDate() + "일의 차량 경로");
-			for (List<Integer> route : r.getRoutes()) {
-				for (int i = 0; i < route.size(); i++) {
-					System.out.print(route.get(i) + " ");
-				}
-				System.out.println();
-			}
-		}
-	}
 
 	public static List<Routes> buildRoutes(){
 		List<Routes> routes = new ArrayList<>();    // solution

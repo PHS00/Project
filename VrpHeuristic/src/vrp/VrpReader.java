@@ -9,18 +9,18 @@ import java.util.Random;
 
 
 public class VrpReader {
-	
+
 	private static int n = 0;
 	private static int[] startDays;
 	private static int[] serviceTimes;
 	private static double[][] dists;
 	private static String dataName = "gwangsan-data-n15";
 
-	
+
 	private static Path path = Paths.get("/Users/phs/Desktop/OptLab/Project/Data/"
 			+ dataName
 			+ ".txt");
-	
+
 	public static VrpProblem readDataInstance() throws IOException {
 		List<String> allLines = Files.readAllLines(path);
 		String[] tmpdata;
@@ -37,8 +37,11 @@ public class VrpReader {
 				if(i == j) {
 					dists[i][j] = 0.;
 				}
-				dists[i][j] = rand.nextDouble() * 100;
+				dists[i][j] = rand.nextDouble() * 10000;
 			}
+		}
+		for (int i = 0; i < n; i++) {
+			startDays[i] = rand.nextInt(30);
 		}
 //		for(int i=1; i<n+1; i++) {
 //			tmpdata = allLines.get(i).split(",");
@@ -59,7 +62,7 @@ public class VrpReader {
 //		for(int i=0; i<n; i++) {
 //			serviceTimes[i] = Integer.parseInt(tmpdata[i]);
 //		}
-		
+
 		System.out.println("n: "+n);
 		System.out.println();
 		System.out.println("거리는");
@@ -69,8 +72,8 @@ public class VrpReader {
 			}
 			System.out.println();
 		}
-		
+
 		return new VrpProblem(n, startDays, dists, serviceTimes);
 	}
-	
+
 }
