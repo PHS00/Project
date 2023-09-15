@@ -18,17 +18,21 @@ public class Test {
 		List<Routes> routes = buildRoutes();    // build routes
 
 		VrpSolution sol = new VrpSolution(routes, problem);    // create solution
+		sol.addRoutesList(creatDummyRoutes(4));    // input date부터 30일까지(말일) Routes 더미 생성후 추가
 
 		Random rand = new Random();
-		Lns lns = new Lns(rand);
+		Lns lns = new Lns(problem, rand);
 
 		System.out.println("변경 전 총 거리 비용 : " + sol.calTotalCost());
 
 		sol.showRoutes();    // 변경 전 경로 출력
 
-		// 1일부터 4일까지 반복
-		for (int i = 1; i < 4; i++) {
-			lns.remove(sol, 2, i);
+		for (int step = 0; step < 3; step++) {
+			// 1일부터 4일까지 반복
+			for (int i = 1; i < 4; i++) {
+				lns.remove(sol, 2, i);
+			}
+
 			System.out.print("removedId : ");
 			for (Integer removedId : sol.getRemovedSites()) {
 				System.out.print(removedId + " ");
@@ -45,6 +49,23 @@ public class Test {
 		System.out.println("변경 후 총 거리 비용 : " + sol.calTotalCost());
 	}
 
+	public static List<Routes> creatDummyRoutes(int date){
+		List<Routes> routesList = new ArrayList<>();
+		int vehicle = 2;
+		for(int i = date; i < 31; i++){
+			List<List<Integer>> routes = new ArrayList<>(vehicle);
+//			routes.add(new ArrayList<>());
+//			routes.add(new ArrayList<>());
+//			for(int k = 0; k < vehicle; k++){
+//				List<Integer> route = new ArrayList<>();
+//				route.add(0);
+//				route.add(0);
+//				routes.add(route);
+//			}
+			routesList.add(new Routes(i, routes));
+		}
+		return routesList;
+	}
 
 	public static List<Routes> buildRoutes(){
 		List<Routes> routes = new ArrayList<>();    // solution

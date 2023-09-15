@@ -37,7 +37,7 @@ public class VrpReader {
 				if(i == j) {
 					dists[i][j] = 0.;
 				}
-				dists[i][j] = rand.nextDouble() * 10000;
+				dists[i][j] = rand.nextDouble() * 1000;
 			}
 		}
 		for (int i = 0; i < n; i++) {
@@ -56,12 +56,19 @@ public class VrpReader {
 //				startDays[i] = Integer.parseInt(tmpdata[i]);
 //				System.out.println(tmpdata[i]);
 //		}
+		for(int i=0; i<n; i++) {
+				startDays[i] = rand.nextInt(5)+1;
+		}
 //		
 //		tmpdata = allLines.get(n+2).split(",");
 ////		tmpdata = allLines.get(92).split(",");
 //		for(int i=0; i<n; i++) {
 //			serviceTimes[i] = Integer.parseInt(tmpdata[i]);
 //		}
+		for(int i=0; i<n; i++) {
+			serviceTimes[i] = rand.nextInt(5);
+		}
+		serviceTimes[0] = 0;
 
 		System.out.println("n: "+n);
 		System.out.println();

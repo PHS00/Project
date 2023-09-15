@@ -66,60 +66,14 @@ public VrpSolution(List<Routes> routes, List<Integer> removedSites, VrpProblem p
 		}
 	}
 
-
-	public void insertSite(List<Integer> route, Integer minId, Integer insertId) {
-		// TODO : 삽입할때 유효성 검사 해야함
-
-		if(minId == 0){
-			List<Integer> route_init = copyRoute(route);
-			List<Integer> route_end = copyRoute(route);
-
-			route_init.add(1, insertId);
-			route_end.add(route.size()-1,insertId);
-
-			if(calCost(route_init) < calCost(route_end)){
-				// case insert init
-				route.add(1, insertId);
-			}else{
-				// case insert end
-				route.add(route.size()-1,insertId);
-			}
-			return;
-		}
-
-		// 경로상 가장 가까운 현장의 위치를 찾는다
-		int index = route.indexOf(minId);
-
-		List<Integer> route_back = copyRoute(route);
-		List<Integer> route_front = copyRoute(route);
-
-		route_back.add(index+1, insertId);
-		route_front.add(index, insertId);
-
-		if(calCost(route_back) < calCost(route_front)){
-			route.add(index+1, insertId);
-		}else{
-			route.add(index, insertId);
-		}
+	public void addRoutes(Routes routes){
+		this.routes.add(routes);
 	}
 
-	public List<Integer> copyRoute(List<Integer> route){
-		List<Integer> copyRoute = new ArrayList<>();
-		for(Integer Site : route){
-			copyRoute.add(Site);
+	public void addRoutesList(List<Routes> routesList){
+		for(Routes r : routesList){
+			this.routes.add(r);
 		}
-		return copyRoute;
-	}
-
-
-	public double calCost(List<Integer> route){
-		double cost = 0.;
-		for(int i = 0; i < route.size()-1; i++) {
-			Integer now = route.get(i);
-			Integer next = route.get(i + 1);
-			cost += problem.calDis(now, next);
-		}
-		return cost;
 	}
 
 	public double calTotalCost() {
@@ -130,8 +84,8 @@ public VrpSolution(List<Routes> routes, List<Integer> removedSites, VrpProblem p
 				for (int i = 0; i < route.size() - 1; i++) {
 					int now = route.get(i);
 					int next = route.get(i + 1);
-					cost += problem.calDis(now, next);
-					perCost += problem.calDis(now, next);
+					cost += problem.getDis(now, next);
+					perCost += problem.getDis(now, next);
 				}
 			}
 			r.setTotalCost(perCost);
@@ -140,12 +94,12 @@ public VrpSolution(List<Routes> routes, List<Integer> removedSites, VrpProblem p
 		return cost;
 	}
 
-	public double calTravelTime(List<Integer> route){
+	public double calWorkingTime(List<Integer> route){
 		double travelTime = 0.;
 		for (int i = 0; i < route.size() - 1; i++) {
 			int now = route.get(i);
 			int next = route.get(i + 1);
-			travelTime += problem.calTravelTime(now, next) + problem.getServiceTimeOfSite(next);
+			travelTime += problem.getTravelTime(now, next) + problem.getServiceTimeOfSite(next);
 		}
 		return travelTime;
 	}
@@ -157,7 +111,7 @@ public VrpSolution(List<Routes> routes, List<Integer> removedSites, VrpProblem p
 				for (int i = 0; i < route.size(); i++) {
 					System.out.print(route.get(i) + " ");
 				}
-				System.out.print("Travel Time per route : " + calTravelTime(route));
+				System.out.print("Working Time per route : " + calWorkingTime(route));
 				System.out.println();
 			}
 		}

@@ -11,7 +11,7 @@ public class VrpProblem {
 	private double[][] dists;
 	private int[] serviceTimes;
 
-	private int workingTime;
+	private int timeLimit;
 	private List<List<Integer>> availableDays = new ArrayList<>();
 	private double[][] travelTimes;
 
@@ -25,7 +25,8 @@ public class VrpProblem {
 		this.dists = dists;
 		this.serviceTimes = serviceTimes;
 
-		setWorkingTime(240);
+		setNumVehicles(2);
+		setTimeLimit(7);
 		createSites();
 		buildAvaiableDays();
 		buildTravelTimes();
@@ -42,8 +43,8 @@ public class VrpProblem {
 		this.numVehicles = numVehicles;
 	}
 
-	public void setWorkingTime(int workingTime) {
-		this.workingTime = workingTime;
+	public void setTimeLimit(int timeLimit) {
+		this.timeLimit = timeLimit;
 	}
 
 	public void buildAvaiableDays() {
@@ -85,15 +86,15 @@ public class VrpProblem {
 		return this.sites;
 	}
 
-	public int getWorkingTime(){
-		return this.workingTime;
+	public int getTimeLimit(){
+		return this.timeLimit;
 	}
 
-	public double calDis(int node1, int node2) {
+	public double getDis(int node1, int node2) {
 		return this.dists[node1][node2];
 	}
 
-	public double calTravelTime(int node1, int node2) {
+	public double getTravelTime(int node1, int node2) {
 		return this.travelTimes[node1][node2];
 	}
 
