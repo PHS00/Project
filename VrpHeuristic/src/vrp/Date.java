@@ -1,15 +1,19 @@
 package vrp;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Routes {
+public class Date {
     private int date;   // id == index
     private List<List<Integer>> routes;
     private double totalCost;
     private double workingTime;
 
-    public Routes(int date, List<List<Integer>> routes){
+    public Date(int date){
+        this.date = date;
+        this.routes = new ArrayList<>();
+    }
+    public Date(int date, List<List<Integer>> routes){
         this.date = date;
         this.routes = routes;
     }

@@ -4901,10 +4901,10 @@ public class Lns {
 		return new VrpSolution(newRoutes, removedCustomers, problem);
 	}
 
-	public List<List<Integer>> buildRoutesWithoutRemovedCusts(List<List<Integer>> routes, List<Integer> toRemove) {
+	public List<List<Integer>> buildRoutesWithoutRemovedCusts(List<List<Integer>> date, List<Integer> toRemove) {
 		HashSet<Integer> removedCustomersSet = new HashSet<Integer>(toRemove);
-		List<List<Integer>> newRoutes = new ArrayList<List<Integer>>(routes.size());
-		for (List<Integer> oldRoute : routes) {
+		List<List<Integer>> newRoutes = new ArrayList<List<Integer>>(date.size());
+		for (List<Integer> oldRoute : date) {
 			List<Integer> newRoute = new ArrayList<Integer>();
 			newRoutes.add(newRoute);
 			for (Integer customerId : oldRoute) {
@@ -4920,7 +4920,7 @@ public class Lns {
 	public List<List<Integer>> repair(VrpSolution sol, ArrayList<Integer> removedCustomers,
 			ArrayList<Integer> remainingCustomers){
 		
-		List<List<Integer>> routes = sol.getRoutes();
+		List<List<Integer>> date = sol.getRoutes();
 		VrpProblem problem = sol.getProblem();
 		
 		while(!removedCustomers.isEmpty()) {
@@ -4936,7 +4936,7 @@ public class Lns {
 				}
 			}
 			
-			for(List<Integer> route : routes) {
+			for(List<Integer> route : date) {
 				if(route.contains(minNodeId)) {
 					
 					calCost(route, minNodeId, removedId);

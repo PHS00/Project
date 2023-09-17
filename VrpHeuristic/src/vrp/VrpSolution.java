@@ -6,46 +6,70 @@ import java.util.List;
 public class VrpSolution {
 
 //	private List<List<Integer>> routes;
-private List<Integer> removedSites = new ArrayList<>();
+	private List<Integer> removedSites = new ArrayList<>();
 	private VrpProblem problem;
 //	private int date;
 
-	private List<Routes> routes;
+	private List<Date> dates;
+	private List<Integer> haveRoutesDates;
+	private List<Integer> noRoutesDates;
 
 
 //	public VrpSolution(List<List<Integer>> routes, VrpProblem problem) {
 //		this.routes = routes;
 //		this.problem = problem;
 //	}
-public VrpSolution(List<Routes> routes, VrpProblem problem){
-	this.routes = routes;
-	this.problem = problem;
-}
+	public VrpSolution(List<Date> dates, VrpProblem problem){
+		this.dates = dates;
+		this.problem = problem;
+		buildHaveRoutesDates();
+		buildNoRoutesDates();
+	}
 
 //	public VrpSolution(List<List<Integer>> routes, List<Integer> removedCustomers, VrpProblem problem) {
 //		this(routes, problem);
 //		this.unrouted = removedCustomers;
 //	}
-public VrpSolution(List<Routes> routes, List<Integer> removedSites, VrpProblem problem) {
-	this(routes, problem);
-	this.removedSites = removedSites;
-}
+	public VrpSolution(List<Date> routes, List<Integer> removedSites, VrpProblem problem) {
+		this(routes, problem);
+		this.removedSites = removedSites;
+	}
+
+	public void buildHaveRoutesDates(){
+		haveRoutesDates = new ArrayList<>();
+		for(Date d : dates){
+			haveRoutesDates.add(d.getDate());
+		}
+	}
+
+	public void buildNoRoutesDates(){
+		noRoutesDates = new ArrayList<>();
+		int endDate = 31;
+		for(int date = 1; date < endDate; date++){
+			if(!haveRoutesDates.contains(date))
+				noRoutesDates.add(date);
+		}
+	}
+
 
 	public VrpProblem getProblem() {
 		return this.problem;
 	}
 
-	//	public List<List<Integer>> getRoutes(){
-//		return this.routes;
-//	}
-	public List<Routes> getRoutes(){
-		return this.routes;
+	public List<Integer> getHaveRoutesDates(){
+		return this.haveRoutesDates;
+	}
+	public List<Integer> getNoRoutesDates(){
+		return this.noRoutesDates;
+	}
+	public List<Date> getDates(){
+		return this.dates;
 	}
 
-	public Routes getRouteOfDate(int date){
-		for(Routes r : this.routes){
-			if(date == r.getDate()){
-				return r;
+	public Date getRouteOfDate(int date){
+		for(Date d : this.dates){
+			if(date == d.getDate()){
+				return d;
 			}
 		}
 		return null;
@@ -66,21 +90,21 @@ public VrpSolution(List<Routes> routes, List<Integer> removedSites, VrpProblem p
 		}
 	}
 
-	public void addRoutes(Routes routes){
-		this.routes.add(routes);
+	public void addDate(Date date){
+		this.dates.add(date);
 	}
 
-	public void addRoutesList(List<Routes> routesList){
-		for(Routes r : routesList){
-			this.routes.add(r);
+	public void addDatesList(List<Date> dateList){
+		for(Date r : dateList){
+			this.dates.add(r);
 		}
 	}
 
 	public double calTotalCost() {
 		double cost = 0.;
 		double perCost = 0.;
-		for (Routes r : routes) {
-			for (List<Integer> route : r.getRoutes()) {
+		for (Date date : dates) {
+			for (List<Integer> route : date.getRoutes()) {
 				for (int i = 0; i < route.size() - 1; i++) {
 					int now = route.get(i);
 					int next = route.get(i + 1);
@@ -88,26 +112,30 @@ public VrpSolution(List<Routes> routes, List<Integer> removedSites, VrpProblem p
 					perCost += problem.getDis(now, next);
 				}
 			}
-			r.setTotalCost(perCost);
+			date.setTotalCost(perCost);
 			perCost = 0.;
 		}
 		return cost;
 	}
 
 	public double calWorkingTime(List<Integer> route){
-		double travelTime = 0.;
+		double workingTime = 0.;
 		for (int i = 0; i < route.size() - 1; i++) {
 			int now = route.get(i);
 			int next = route.get(i + 1);
-			travelTime += problem.getTravelTime(now, next) + problem.getServiceTimeOfSite(next);
+			workingTime += problem.getTravelTime(now, next) + problem.getServiceTimeOfSite(next);
 		}
-		return travelTime;
+		return workingTime;
+	}
+
+	public void updateWorkingTime(){
+
 	}
 
 	public void showRoutes(){
-		for (Routes r : routes) {
-			System.out.println(r.getDate() + "일의 차량 경로");
-			for (List<Integer> route : r.getRoutes()) {
+		for (Date d : dates) {
+			System.out.println(d.getDate() + "일의 차량 경로");
+			for (List<Integer> route : d.getRoutes()) {
 				for (int i = 0; i < route.size(); i++) {
 					System.out.print(route.get(i) + " ");
 				}

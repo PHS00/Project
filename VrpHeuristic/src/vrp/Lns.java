@@ -1,6 +1,5 @@
 package vrp;
 
-import java.sql.SQLOutput;
 import java.util.*;
 
 public class Lns {
@@ -13,14 +12,14 @@ public class Lns {
 		this.rand = rand;
 	}
 
-	public void remove(VrpSolution sol, int numToRemove, int date) {
+	public void remove(VrpSolution sol, int numToRemove, Integer date) {
 		ArrayList<Integer> removedSites = new ArrayList<>();
 		ArrayList<Integer> remainingSites = new ArrayList<>();
 		int depot = 0;
 
-		// 해당하는 날짜의 경로를 가져옴
-		Routes routes = sol.getRouteOfDate(date);
-		List<List<Integer>> consideringRoutes = routes.getRoutes();
+		// 해당하는 날짜 객체를 가져옴
+		Date d = sol.getRouteOfDate(date);
+		List<List<Integer>> consideringRoutes = d.getRoutes();
 		for (List<Integer> route : consideringRoutes) {
 			for (Integer siteID : route) {
 				if(siteID == depot) continue;
@@ -40,7 +39,17 @@ public class Lns {
 		}
 		// build the new solution
 		List<List<Integer>> newRoutes = buildRoutesWithoutRemovedSites(consideringRoutes, removedSites);
-		routes.updateRoutes(newRoutes);
+		d.updateRoutes(newRoutes);
+		// Date 객체의 경로 검사
+		for(List<Integer> route : d.getRoutes()){
+			if(route.size() == 2)
+				route.clear();
+		}
+		if(d.getRoutes().isEmpty()){
+			sol.getDates().remove(d);
+			sol.getNoRoutesDates().add(date);
+			sol.getHaveRoutesDates().remove(date);
+		}
 		sol.addRemovedSites(removedSites);
 
 	}
@@ -61,9 +70,11 @@ public class Lns {
 
 	public void repair(VrpSolution sol){
 
-		List<Routes> RoutesList = sol.getRoutes();
+		List<Date> dateList = sol.getDates();
 		VrpProblem problem = sol.getProblem();
 		List<Integer> removedSites = sol.getRemovedSites();
+		List<Integer> noRoutesDates = sol.getNoRoutesDates();
+		List<Integer> haveRoutesDates = sol.getHaveRoutesDates();
 
 		List<Integer> assignedSites = new ArrayList<>();
 		List<List<Integer>> availableRoutes = new ArrayList<>();
@@ -78,7 +89,7 @@ public class Lns {
 
 			availableRoutes.clear();
 			assignedSites.clear();
-			for(Routes r : RoutesList){
+			for(Date r : dateList){
 				// 1. 가능한 날짜 이후의 경로만 고려
 				if(r.getDate() > availableDate){
 					for(List<Integer> route : r.getRoutes()) {
@@ -99,11 +110,16 @@ public class Lns {
 			// 삽입할 수 있는 경로가 없다면
 			if(availableRoutes.isEmpty()){
 				// 어느 날짜에 삽입할지 랜덤으로 결정
-				int date = rand.nextInt(25)+5;
-				Routes routes = sol.getRouteOfDate(date);
+				double random = rand.nextDouble();
+				int index = (int) random * noRoutesDates.size();
+				Integer date = noRoutesDates.get(index);
+
 				// 해당 날짜에 경로 생성 후 삽입
-				insertWithoutMinSite(routes, removedId);
+				insertWithoutMinSite(date, removedId, sol);
 				removedSites.remove(removedId);
+
+				noRoutesDates.remove(date);
+				haveRoutesDates.add(date);
 				continue;
 			}
 			System.out.print("최소값을 찾기 위한 할당된 site id : ");
@@ -121,17 +137,18 @@ public class Lns {
 			for(List<Integer> route : availableRoutes) {
 				if (route.contains(minSiteId)) {
 					insertSite(route, minSiteId, removedId);
+					removedSites.remove(removedId);
 					break;
 				}
 			}
-
-			removedSites.remove(removedId);
 
 		}
 
 	}
 
-	public void insertWithoutMinSite(Routes Routes, Integer removedId){
+	public void insertWithoutMinSite(int date, Integer removedId, VrpSolution sol){
+		// 새로운 Date 객체 생성
+		Date D = new Date(date);
 		// 새로운 경로 생성
 		List<Integer> route = new ArrayList<>();
 
@@ -143,7 +160,9 @@ public class Lns {
 		route.add(0);
 
 		// 해당 날짜 경로에 추가
-		Routes.addRoute(route);
+		D.addRoute(route);
+		sol.addDate(D);
+
 	}
 
 	public Integer findMinSite(VrpProblem problem, Integer removedId, List<Integer> assignedSites){

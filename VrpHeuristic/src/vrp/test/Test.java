@@ -3,9 +3,7 @@ package vrp.test;
 import vrp.*;
 
 import java.io.IOException;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -15,10 +13,10 @@ public class Test {
 		// TODO Auto-generated method stub
 		VrpProblem problem = VrpReader.readDataInstance();
 
-		List<Routes> routes = buildRoutes();    // build routes
+		List<Date> dates = buildRoutes();    // build routes
 
-		VrpSolution sol = new VrpSolution(routes, problem);    // create solution
-		sol.addRoutesList(creatDummyRoutes(4));    // input date부터 30일까지(말일) Routes 더미 생성후 추가
+		VrpSolution sol = new VrpSolution(dates, problem);    // create solution
+//		sol.addDatesList(creatDummyRoutes(4));    // input date부터 30일까지(말일) Routes 더미 생성후 추가
 
 		Random rand = new Random();
 		Lns lns = new Lns(problem, rand);
@@ -49,8 +47,8 @@ public class Test {
 		System.out.println("변경 후 총 거리 비용 : " + sol.calTotalCost());
 	}
 
-	public static List<Routes> creatDummyRoutes(int date){
-		List<Routes> routesList = new ArrayList<>();
+	public static List<Date> creatDummyRoutes(int date){
+		List<Date> dateList = new ArrayList<>();
 		int vehicle = 2;
 		for(int i = date; i < 31; i++){
 			List<List<Integer>> routes = new ArrayList<>(vehicle);
@@ -62,13 +60,13 @@ public class Test {
 //				route.add(0);
 //				routes.add(route);
 //			}
-			routesList.add(new Routes(i, routes));
+			dateList.add(new Date(i, routes));
 		}
-		return routesList;
+		return dateList;
 	}
 
-	public static List<Routes> buildRoutes(){
-		List<Routes> routes = new ArrayList<>();    // solution
+	public static List<Date> buildRoutes(){
+		List<Date> routes = new ArrayList<>();    // solution
 
 		List<List<Integer>> routeDate1 = new ArrayList<>();    // route of date1
 		routeDate1.add(new ArrayList<>());
@@ -85,7 +83,7 @@ public class Test {
 		routeDate1.get(1).add(5);
 		routeDate1.get(1).add(6);
 		routeDate1.get(1).add(0);
-		Routes r1 = new Routes(1, routeDate1);
+		Date r1 = new Date(1, routeDate1);
 		routes.add(r1);
 
 		List<List<Integer>> routeDate2 = new ArrayList<>();    // route of date1
@@ -101,7 +99,7 @@ public class Test {
 		routeDate2.get(1).add(11);
 		routeDate2.get(1).add(12);
 		routeDate2.get(1).add(0);
-		Routes r2 = new Routes(2, routeDate2);
+		Date r2 = new Date(2, routeDate2);
 		routes.add(r2);
 
 		List<List<Integer>> routeDate3 = new ArrayList<>();    // route of date1
@@ -117,7 +115,7 @@ public class Test {
 		routeDate3.get(1).add(17);
 		routeDate3.get(1).add(18);
 		routeDate3.get(1).add(0);
-		Routes r3 = new Routes(3, routeDate3);
+		Date r3 = new Date(3, routeDate3);
 		routes.add(r3);
 
 		return routes;

@@ -26,7 +26,7 @@ public class VrpProblem {
 		this.serviceTimes = serviceTimes;
 
 		setNumVehicles(2);
-		setTimeLimit(7);
+		setTimeLimit(10);
 		createSites();
 		buildAvaiableDays();
 		buildTravelTimes();
