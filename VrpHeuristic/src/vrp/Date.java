@@ -1,14 +1,19 @@
 package vrp;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Routes {
+public class Date {
     private int date;   // id == index
     private List<List<Integer>> routes;
     private double totalCost;
-    private double travelTime;
+    private double workingTime;
 
-    public Routes(int date, List<List<Integer>> routes){
+    public Date(int date){
+        this.date = date;
+        this.routes = new ArrayList<>();
+    }
+    public Date(int date, List<List<Integer>> routes){
         this.date = date;
         this.routes = routes;
     }
@@ -19,11 +24,14 @@ public class Routes {
     public double getCost(){
         return this.totalCost;
     }
-    public void setTravelTime(double travelTime){
-        this.travelTime = travelTime;
+    public void setWorkingTime(double travelTime){
+        this.workingTime = travelTime;
     }
-    public double getTravelTime(){
-        return this.travelTime;
+    public double getWorkingTime(){
+        return this.workingTime;
+    }
+    public void addRoute(List<Integer> route){
+        this.routes.add(route);
     }
 
     public List<List<Integer>> getRoutes (){
