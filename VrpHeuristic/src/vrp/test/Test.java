@@ -13,8 +13,8 @@ public class Test {
 		// TODO Auto-generated method stub
 		VrpProblem problem = VrpReader.readDataInstance();
 
-//		List<Date> dates = buildRoutes();    // build routes
-		List<Date> dates = InitialSolutionReader.readInitialSolution();
+		List<Date> dates = buildRoutes();    // build routes
+//		List<Date> dates = InitialSolutionReader.readInitialSolution();
 		VrpSolution sol = new VrpSolution(dates, problem);    // create solution
 //		sol.addDatesList(creatDummyRoutes(4));    // input date부터 30일까지(말일) Routes 더미 생성후 추가
 
