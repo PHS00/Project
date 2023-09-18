@@ -111,7 +111,7 @@ public class Lns {
 			if(availableRoutes.isEmpty()){
 				// 어느 날짜에 삽입할지 랜덤으로 결정
 				double random = rand.nextDouble();
-				int index = (int) random * noRoutesDates.size();
+				int index = (int) (random * noRoutesDates.size());
 				Integer date = noRoutesDates.get(index);
 
 				// 해당 날짜에 경로 생성 후 삽입
@@ -147,8 +147,17 @@ public class Lns {
 	}
 
 	public void insertWithoutMinSite(int date, Integer removedId, VrpSolution sol){
+		Date D = null;
+		for(Date d : sol.getDates()){
+			if(d.getRoutes().size() == 1){
+				D = d;
+				break;
+			}
+		}
+		// TODO : 경로 1개 있는 날짜에 추가 경로 넣는 코드로 바꿨기때문에 haveRouteDates 리스트 업데이트 코드 수정해야함
+		if(D == null)
+			D = new Date(date);
 		// 새로운 Date 객체 생성
-		Date D = new Date(date);
 		// 새로운 경로 생성
 		List<Integer> route = new ArrayList<>();
 
