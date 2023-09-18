@@ -42,6 +42,9 @@ public class VrpProblem {
 	public void setNumVehicles(int numVehicles) {
 		this.numVehicles = numVehicles;
 	}
+	public int getNumVehicles(){
+		return this.numVehicles;
+	}
 
 	public void setTimeLimit(int timeLimit) {
 		this.timeLimit = timeLimit;
